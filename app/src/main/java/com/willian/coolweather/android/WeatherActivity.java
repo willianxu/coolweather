@@ -10,6 +10,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -82,7 +83,7 @@ public class WeatherActivity extends AppCompatActivity {
         if (weatherString != null){
             //有缓存
             Weather weather = Utility.handleWeatherResponse(weatherString);
-//            location = weather.basic.cityName;
+            location = weather.basic.cityName;
             showWeatherInfo(weather);
         }else {
             location = getIntent().getStringExtra("location");
@@ -102,6 +103,8 @@ public class WeatherActivity extends AppCompatActivity {
         swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                if (currentLocation == null)
+                    currentLocation = location;
                 requestWeather(currentLocation);
             }
         });
@@ -125,7 +128,7 @@ public class WeatherActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(WeatherActivity.this, "获取天气信息失败", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(WeatherActivity.this, "获取天气信息失败1", Toast.LENGTH_SHORT).show();
                         swipeRefresh.setRefreshing(false);
                     }
                 });
@@ -144,7 +147,7 @@ public class WeatherActivity extends AppCompatActivity {
                             editor.apply();
                             showWeatherInfo(weather);
                         }else {
-                            Toast.makeText(WeatherActivity.this, "获取天气信息失败", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(WeatherActivity.this, "获取天气信息失败2", Toast.LENGTH_SHORT).show();
                         }
                         swipeRefresh.setRefreshing(false);
                     }
@@ -157,7 +160,8 @@ public class WeatherActivity extends AppCompatActivity {
 
     private void showWeatherInfo(Weather weather){
         if (weather == null){
-            Toast.makeText(WeatherActivity.this, "获取天气信息失败！", Toast.LENGTH_SHORT).show();
+            Log.d("WeatherActivity", "showWeatherInfo: Failure");
+            Toast.makeText(WeatherActivity.this, "获取天气信息失败3！", Toast.LENGTH_SHORT).show();
             return;
         }
         String cityName = weather.basic.cityName;
