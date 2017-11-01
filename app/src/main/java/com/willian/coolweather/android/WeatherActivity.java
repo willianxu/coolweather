@@ -1,5 +1,6 @@
 package com.willian.coolweather.android;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
@@ -155,13 +156,17 @@ public class WeatherActivity extends AppCompatActivity {
     }
 
     private void showWeatherInfo(Weather weather){
+        if (weather == null){
+            Toast.makeText(WeatherActivity.this, "获取天气信息失败！", Toast.LENGTH_SHORT).show();
+            return;
+        }
         String cityName = weather.basic.cityName;
         String updateTime = weather.update.loc;
-        String degreee = weather.now.temperature + "℃";
+        String degree = weather.now.temperature + "℃";
         String weatherInfo = weather.now.info;
         titleCity.setText(cityName);
         titleUpdateTime.setText(updateTime);
-        degreeText.setText(degreee);
+        degreeText.setText(degree);
         weatherInfoText.setText(weatherInfo);
         forecastLayout.removeAllViews();
         for (Forecast forecast:weather.forecasts){
@@ -192,6 +197,9 @@ public class WeatherActivity extends AppCompatActivity {
         pm25Text.setText("");
 
         weatherLayout.setVisibility(View.VISIBLE);
+
+        Intent intent = new Intent(this, AutoUpdateService.class);
+        startService(intent);
     }
 
     private void loadBingPic(){
